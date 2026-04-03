@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DocumentService } from '../../services/document.service';
 import { Manuscript } from '../../models/document.model';
 
@@ -57,18 +57,15 @@ interface ContentBlock {
       <!-- Right Panel: Reader Area -->
       <section class="flex-1 bg-surface overflow-y-auto relative">
         @if (activeDoc) {
-        <header class="sticky top-0 bg-surface/80 backdrop-blur-md px-12 py-8 flex justify-between items-end z-10">
+        <header class="sticky top-0 bg-surface/80 backdrop-blur-md px-12 py-8 z-10">
           <div class="max-w-2xl">
             <div class="flex items-center gap-3 mb-4">
               <span [ngClass]="getStatusBadgeClass(activeDoc.status)" class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-tighter rounded">{{activeDoc.status}}</span>
               <span class="text-stone-400 text-xs font-headline">{{activeDoc.category}}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-primary-container/15 text-primary-container font-bold uppercase tracking-widest">Read Only</span>
             </div>
             <h1 class="text-4xl font-extrabold text-primary font-headline tracking-tight leading-tight">{{activeDoc.title}}</h1>
           </div>
-          <button (click)="editDocument()" class="flex items-center gap-2 px-6 py-2.5 border border-primary-container/20 text-primary-container rounded-md font-headline font-bold hover:bg-primary-container/5 transition-all mb-1">
-            <span class="material-symbols-outlined text-base">edit</span>
-            Edit Manuscript
-          </button>
         </header>
 
         <article class="max-w-3xl mx-auto px-12 pb-24 space-y-8 mt-12">
@@ -135,7 +132,6 @@ export class ReaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private docService: DocumentService
   ) {}
 
@@ -184,12 +180,6 @@ export class ReaderComponent implements OnInit, OnDestroy {
   clearCategoryFilter() {
     this.selectedCategory = '';
     this.filterList();
-  }
-
-  editDocument() {
-    if (this.activeDocId) {
-      this.router.navigate(['/editor', this.activeDocId]);
-    }
   }
 
   getStatusBadgeClass(status: string): string {

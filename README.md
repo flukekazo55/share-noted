@@ -1,4 +1,20 @@
-# ManuscriptLibrary
+# Support Case Library
+
+## Read-only web app
+
+The web UI is read-only.
+
+- Users can search, filter, and read imported documents.
+- Users cannot create, edit, archive, restore, or delete data from the browser.
+- Data must be managed from host `.txt` files and re-imported.
+
+## Import data from host text files
+
+Update `.txt` files in the parent workspace folder, then run:
+
+```bash
+npm run reimport:txt
+```
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.23.
 
