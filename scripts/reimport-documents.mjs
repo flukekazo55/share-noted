@@ -38,7 +38,27 @@ function sanitizeText(input) {
   const withCompanyAlias = withGenericDomain
     .replace(/\bthai\s*bev\b/gi, 'Company');
 
-  return withCompanyAlias;
+  const withRedactedEmail = withCompanyAlias
+    .replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, '<REDACTED_EMAIL>');
+
+  const withRedactedAddress = withRedactedEmail
+    .replace(/("?[A-Za-z0-9_]*Address"?\s*:\s*)"[^"]*"/g, '$1"<REDACTED_ADDRESS>"');
+
+  const withRedactedNames = withRedactedAddress
+    .replace(/("?(?:saleEmployeeName|customerName|shipToName|privilegeName|promotionName)"?\s*:\s*)"[^"]*"/gi, '$1"<REDACTED_TEXT>"');
+
+  const withRedactedPhones = withRedactedNames
+    .replace(/\b0(?:[689]\d{8}|[1-9]\d{7})\b/g, '<REDACTED_PHONE>');
+
+  const withRedactedQuotedIds = withRedactedPhones
+    .replace(/'(?=[^']*\d)[A-Za-z0-9-]{6,}'/g, '\'<REDACTED_ID>\'');
+
+  const withRedactedLongIds = withRedactedQuotedIds
+    .replace(/\bOS-T\d{5}-\d{10}\b/g, '<REDACTED_ID>')
+    .replace(/\b(?=[A-Z0-9-]*\d)[A-Z0-9-]{8,}\b/g, '<REDACTED_ID>')
+    .replace(/\b\d{8,}\b/g, '<REDACTED_ID>');
+
+  return withRedactedLongIds;
 }
 
 function q(value) {
