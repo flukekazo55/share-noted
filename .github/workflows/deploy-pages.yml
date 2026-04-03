@@ -17,12 +17,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -44,23 +40,20 @@ jobs:
           mkdir -p _site
           cp -r dist/manuscript-library/browser/. _site/
           cp _site/index.html _site/404.html
-
-      - name: Setup Pages (Auto Enable)
-        if: ${{ secrets.PAGES_ADMIN_TOKEN != '' }}
-        uses: actions/configure-pages@v5
-        with:
-          token: ${{ secrets.PAGES_ADMIN_TOKEN }}
-          enablement: true
-
-      - name: Setup Pages
-        if: ${{ secrets.PAGES_ADMIN_TOKEN == '' }}
-        uses: actions/configure-pages@v5
+          touch _site/.nojekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
