@@ -10,10 +10,10 @@ import { FooterComponent } from './shared/footer.component';
   template: `
     <app-header></app-header>
     <app-sidebar></app-sidebar>
-    <main class="ml-64 pt-6 px-12 min-h-screen">
+    <main class="ml-64 pt-6 px-12 min-h-screen bg-surface text-on-surface transition-colors">
       <router-outlet></router-outlet>
     </main>
-    <div class="ml-64">
+    <div class="ml-64 bg-surface transition-colors">
       <app-footer></app-footer>
     </div>
   `,
