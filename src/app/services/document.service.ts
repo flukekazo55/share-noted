@@ -8,7 +8,7 @@ interface StoredManuscript extends Omit<Manuscript, 'dateCreated'> {
 
 @Injectable({ providedIn: 'root' })
 export class DocumentService {
-  private readonly localDbKey = 'share-noted.documents.v1';
+  private readonly localDbKey = 'share-noted.documents.v2';
   private documents: Manuscript[] = [];
 
   constructor() {

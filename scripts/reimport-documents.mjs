@@ -58,7 +58,11 @@ function sanitizeText(input) {
     .replace(/\b(?=[A-Z0-9-]*\d)[A-Z0-9-]{8,}\b/g, '<REDACTED_ID>')
     .replace(/\b\d{8,}\b/g, '<REDACTED_ID>');
 
-  return withRedactedLongIds;
+  const withRedactedAssignments = withRedactedLongIds
+    .replace(/(\bDECLARE\s+@\w+\s+[A-Z0-9_(),\s]+?=\s*)([^;\r\n]+)(;?)/gi, '$1<REDACTED_VALUE>$3')
+    .replace(/(\bSET\s+@\w+\s*=\s*)([^;\r\n]+)(;?)/gi, '$1<REDACTED_VALUE>$3');
+
+  return withRedactedAssignments;
 }
 
 function q(value) {
