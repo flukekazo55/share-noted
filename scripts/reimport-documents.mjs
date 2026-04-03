@@ -22,14 +22,35 @@ function toCategory() {
   return 'Imported / Text';
 }
 
+function sanitizeText(input) {
+  const withGenericHost = input.replace(/https?:\/\/[^\s`"'<>]+/gi, url => {
+    try {
+      const parsed = new URL(url);
+      return `${parsed.protocol}//internal.example.com${parsed.pathname}${parsed.search}${parsed.hash}`;
+    } catch {
+      return url;
+    }
+  });
+
+  const withGenericDomain = withGenericHost
+    .replace(/\b(?:[a-z0-9-]+\.){2,}[a-z]{2,}(?::\d+)?\b/gi, 'internal.example.com');
+
+  const withCompanyAlias = withGenericDomain
+    .replace(/\bthai\s*bev\b/gi, 'Company');
+
+  return withCompanyAlias;
+}
+
 function q(value) {
   return JSON.stringify(value);
 }
 
 const docs = txtFiles.map((fileName, index) => {
   const filePath = path.join(workspaceRoot, fileName);
-  const content = fs.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n').trim();
-  const title = fileName.replace(/\.txt$/i, '');
+  const content = sanitizeText(
+    fs.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n').trim()
+  );
+  const title = sanitizeText(fileName.replace(/\.txt$/i, ''));
   const dateCreated = fs.statSync(filePath).mtime.toISOString().slice(0, 10);
 
   return {
@@ -39,7 +60,7 @@ const docs = txtFiles.map((fileName, index) => {
     content,
     dateCreated,
     status: toStatus(fileName),
-    fileName
+    fileName: sanitizeText(fileName)
   };
 });
 
